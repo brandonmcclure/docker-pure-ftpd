@@ -56,7 +56,7 @@ then
     # Generate the file that will be used to inject in the password prompt stdin
     PWD_FILE="$(mktemp)"
     echo "$FTP_USER_PASS
-$FTP_USER_PASS" > "$PWD_FILE"
+	$FTP_USER_PASS" > "$PWD_FILE"
     
     # Set uid/gid
     PURE_PW_ADD_FLAGS=""
@@ -95,8 +95,21 @@ $FTP_USER_PASS" > "$PWD_FILE"
     fi
 
     rm "$PWD_FILE"
+else
+	echo 'Setting up anonymous access due to absence of user parameters'
+    useradd -d /var/ftp -s /sbin/nologin ftp
+	mkdir /var/ftp
+	pure-pw mkdb
+	#pure-pw useradd "ftp" -f "$PASSWD_FILE" -m -d "/var/ftp"
+	echo "done setting up anonymous access"
 fi
 
+# # Setup anonymous access
+# if [ -z "$ANONYMOUS" ]
+# then
+# 	echo 'Setting up anonymous access'
+#     useradd -d /var/ftp -s /sbin/nologin ftp
+# fi
 # Set a default value to the env var FTP_PASSIVE_PORTS
 if [ -z "$FTP_PASSIVE_PORTS" ]
 then
